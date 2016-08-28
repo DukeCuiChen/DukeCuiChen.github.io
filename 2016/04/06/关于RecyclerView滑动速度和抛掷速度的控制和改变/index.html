@@ -1,0 +1,689 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,RecyclerView,滑动," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章最初分享在我的简书页面。但还是希望自己搭建一个博客，于是在这个博客的雏形搭建之后，将此文搬移过来。
+
+这是我发布的第一篇技术博客，本应该在上个月做项目的时候实时发布的，那时候的理解也最深刻。由于个人执行力不够，拖延到现在，万事开头难，开始了就要坚持下去。
+这篇文章主要讲在Android的RecyclerView组件中，如何设置RecyclerView滑动的速度，以及快速滑动（抛掷）后Rec">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于RecyclerView滑动速度和抛掷速度的控制和改变">
+<meta property="og:url" content="http://dukecuichen.com/2016/04/06/关于RecyclerView滑动速度和抛掷速度的控制和改变/index.html">
+<meta property="og:site_name" content="dukecui技术博客">
+<meta property="og:description" content="这篇文章最初分享在我的简书页面。但还是希望自己搭建一个博客，于是在这个博客的雏形搭建之后，将此文搬移过来。
+
+这是我发布的第一篇技术博客，本应该在上个月做项目的时候实时发布的，那时候的理解也最深刻。由于个人执行力不够，拖延到现在，万事开头难，开始了就要坚持下去。
+这篇文章主要讲在Android的RecyclerView组件中，如何设置RecyclerView滑动的速度，以及快速滑动（抛掷）后Rec">
+<meta property="og:updated_time" content="2016-04-14T14:24:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于RecyclerView滑动速度和抛掷速度的控制和改变">
+<meta name="twitter:description" content="这篇文章最初分享在我的简书页面。但还是希望自己搭建一个博客，于是在这个博客的雏形搭建之后，将此文搬移过来。
+
+这是我发布的第一篇技术博客，本应该在上个月做项目的时候实时发布的，那时候的理解也最深刻。由于个人执行力不够，拖延到现在，万事开头难，开始了就要坚持下去。
+这篇文章主要讲在Android的RecyclerView组件中，如何设置RecyclerView滑动的速度，以及快速滑动（抛掷）后Rec">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6270390139952825000,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <title> 关于RecyclerView滑动速度和抛掷速度的控制和改变 | dukecui技术博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=55475584";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">dukecui技术博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">追求卓越</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', '9z7vmBBnyDcexx_zPZfP','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关于RecyclerView滑动速度和抛掷速度的控制和改变
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-06T17:07:40+08:00" content="2016-04-06">
+              2016-04-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/技术总结分享/" itemprop="url" rel="index">
+                    <span itemprop="name">技术总结分享</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/06/关于RecyclerView滑动速度和抛掷速度的控制和改变/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/06/关于RecyclerView滑动速度和抛掷速度的控制和改变/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章最初分享在我的<a href="http://www.jianshu.com/p/f579999723ca" target="_blank" rel="external">简书页面</a>。但还是希望自己搭建一个博客，于是在这个博客的雏形搭建之后，将此文搬移过来。</p>
+<hr>
+<p>这是我发布的第一篇技术博客，本应该在上个月做项目的时候实时发布的，那时候的理解也最深刻。由于个人执行力不够，拖延到现在，万事开头难，开始了就要坚持下去。</p>
+<p>这篇文章主要讲在Android的RecyclerView组件中，如何设置RecyclerView滑动的速度，以及快速滑动（抛掷）后RecyclerView滑行的速度（或者称为距离）。<br><a id="more"></a></p>
+<h1 id="RecyclerView滑动速度的设置（此处以横向的滑动为例）"><a href="#RecyclerView滑动速度的设置（此处以横向的滑动为例）" class="headerlink" title="RecyclerView滑动速度的设置（此处以横向的滑动为例）"></a>RecyclerView滑动速度的设置（此处以横向的滑动为例）</h1><p>自定义一个类继承自LayoutManager，然后重载其scrollHorizontallyBy()方法，其中在该方法中，第一个参数dx即为滑动的距离，因此改变这个值就可以改变滑动的速度。为了方便设置其滑动的速度，可以自定义一个速度因子speedRatio，通过利用dx*speedRatio来达到控制速度的目的。示例代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomSGLayoutManager</span> <span class="keyword">extends</span> <span class="title">StaggeredGridLayoutManager</span> </span>&#123;    </div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> speedRatio;    <span class="comment">//速度因子</span></div><div class="line">		</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomSGLayoutManager</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr, <span class="keyword">int</span> defStyleRes)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr, defStyleRes);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomSGLayoutManager</span><span class="params">(<span class="keyword">int</span> spanCount, <span class="keyword">int</span> orientation)</span> </span>&#123;</div><div class="line">      <span class="keyword">super</span>(spanCount, orientation);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">scrollHorizontallyBy</span><span class="params">(<span class="keyword">int</span> dx, RecyclerView.Recycler recycler, RecyclerView.State state)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> a = <span class="keyword">super</span>.scrollHorizontallyBy((<span class="keyword">int</span>)(speedRatio*dx), recycler, state);</div><div class="line">        <span class="keyword">if</span>(a == (<span class="keyword">int</span>)(speedRatio*dx))&#123;</div><div class="line">            <span class="keyword">return</span> dx;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> a;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSpeedRatio</span><span class="params">(<span class="keyword">double</span> speedRatio)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.speedRatio = speedRatio;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而后，实例化这个类，并设置为RecyclerView的布局，代码如下所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> RecyclerView skyRecyclerView;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</div><div class="line">    CustomSGLayoutManager skyLayoutManager = <span class="keyword">new</span> CustomSGLayoutManager(<span class="number">1</span>,StaggeredGridLayoutManager.HORIZONTAL);<span class="comment">//实例化自定义类</span></div><div class="line">    skyLayoutManager.setSpeedRatio(<span class="number">0.82</span>);<span class="comment">//设置其速度因子</span></div><div class="line">    skyRecyclerView.setLayoutManager(skyLayoutManager);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="RecyclerView抛掷速度的设置（此处以横向的滑动为例）"><a href="#RecyclerView抛掷速度的设置（此处以横向的滑动为例）" class="headerlink" title="RecyclerView抛掷速度的设置（此处以横向的滑动为例）"></a>RecyclerView抛掷速度的设置（此处以横向的滑动为例）</h1><p>自定义一个类继承自RecyclerView，然后重载其fling()方法，在该方法中velocityX为其横向的移动距离（此处以横向的滑动为例），velocityY为其纵向的移动距离，改变这两个参数，即可以改变其相应方向滑动的距离。为了方便设置，这里同样引入一个缩放因子scale，代码示例如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomRecyclerView</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> scale;               <span class="comment">//抛掷速度的缩放因子</span></div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomRecyclerView</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomRecyclerView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomRecyclerView</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyle)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs, defStyle);</div><div class="line">    &#125;</div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setflingScale</span><span class="params">(<span class="keyword">double</span> scale)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.scale = scale;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fling</span><span class="params">(<span class="keyword">int</span> velocityX, <span class="keyword">int</span> velocityY)</span> </span>&#123;</div><div class="line">        velocityX *= scale;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.fling(velocityX, velocityY);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而后，在RecyclerView中设置其缩放因子即可，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">skyLayoutManager.setSpeedRatio(<span class="number">0.5</span>);</div></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了如何改变一个RecyclerView的滑动速度和抛掷速度的问题。通常情况下可能并不需要对这两个参数做出改变，因为我在做项目的时候，用到了5个RecyclerView放置在同一个Activity中，同时又要求每一个RecyclerView的滑动速度不同，因此总结出了以上的方法，实现了相应的需求。同时文章对更多的细节并没有过多的研究，还望批评指正。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/RecyclerView/" rel="tag">#RecyclerView</a>
+          
+            <a href="/tags/滑动/" rel="tag">#滑动</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/08/基于Hexo框架-GitHub-Pages搭建个人博客/" rel="prev" title="基于Hexo框架+GitHub Pages搭建个人博客">
+                基于Hexo框架+GitHub Pages搭建个人博客 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/06/关于RecyclerView滑动速度和抛掷速度的控制和改变/"
+           data-title="关于RecyclerView滑动速度和抛掷速度的控制和改变" data-url="http://dukecuichen.com/2016/04/06/关于RecyclerView滑动速度和抛掷速度的控制和改变/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/myprofile.jpg"
+               alt="Duke Cui" />
+          <p class="site-author-name" itemprop="name">Duke Cui</p>
+          <p class="site-description motion-element" itemprop="description">要么飞，要么坠落，这是生命的规则</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/DukeCuiChen" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RecyclerView滑动速度的设置（此处以横向的滑动为例）"><span class="nav-number">1.</span> <span class="nav-text">RecyclerView滑动速度的设置（此处以横向的滑动为例）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RecyclerView抛掷速度的设置（此处以横向的滑动为例）"><span class="nav-number">2.</span> <span class="nav-text">RecyclerView抛掷速度的设置（此处以横向的滑动为例）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Duke Cui</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="//fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="//jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="//velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="//velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="//fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dukecuichen"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
